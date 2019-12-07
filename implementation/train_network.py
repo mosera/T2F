@@ -100,7 +100,12 @@ def train_networks(encoder, ca, c_pro_gan, dataset, epochs,
                    log_dir, sample_dir, checkpoint_factor,
                    save_dir, use_matching_aware_dis=True):
     assert c_pro_gan.depth == len(batch_sizes), "batch_sizes not compatible with depth"
-
+    if not(os.path.exists(log_dir)):
+        os.makedirs(log_dir)
+    if not(os.path.exists(sample_dir)):
+        os.makedirs(sample_dir)
+    if not(os.path.exists(save_dir)):
+        os.makedirs(save_dir)
     print("Starting the training process ... ")
     for current_depth in range(start_depth, c_pro_gan.depth):
 
@@ -163,7 +168,9 @@ def train_networks(encoder, ca, c_pro_gan, dataset, epochs,
 
                     # also write the losses to the log file:
                     log_file = os.path.join(log_dir, "loss_" + str(current_depth) + ".log")
-                    with open(log_file, "a") as log:
+                    # with open(log_file, "a") as log:
+
+                    with open(log_file, "a+") as log:
                         log.write(str(dis_loss) + "\t" + str(gen_loss) + "\n")
 
                     # create a grid of samples and save it

@@ -3,7 +3,7 @@
 import json
 import re
 import pickle
-
+import pandas as pd
 
 def read_annotations(file_path):
     """
@@ -11,20 +11,24 @@ def read_annotations(file_path):
     :param file_path: path of the json file
     :return: annos => read annotations
     """
-    with open(file_path, "r") as json_desc:
-        annos = json.load(json_desc)
+    # with open(file_path, "r") as json_desc:
+    #     annos = json.load(json_desc)
 
-    images, descriptions = [], []  # initialize to empty lists
-    # convert all the file's extensions to .jpg
-    for anno in annos:
-        name, _ = anno['image'].split('.')
-        new_name = name + '.jpg'
-        anno['image'] = new_name
+    csv = pd.read_csv(file_path)
+    images, descriptions = csv['FileName'], csv['Description']
+    descriptions = descriptions.str.lower()
+    print(images.head(), descriptions.head())
+    # images, descriptions = [], []  # initialize to empty lists
+    # # convert all the file's extensions to .jpg
+    # for anno in annos:
+    #     name, _ = anno['image'].split('.')
+    #     new_name = name + '.jpg'
+    #     anno['image'] = new_name
 
-        # extract only the image_id and the descriptions in a list
-        for desc in anno['descriptions']:
-            images.append(anno['image'])
-            descriptions.append(desc['text'].lower())
+    #     # extract only the image_id and the descriptions in a list
+    #     for desc in anno['descriptions']:
+    #         images.append(anno['image'])
+    #         descriptions.append(desc['text'].lower())
 
     # check if their lengths match:
     assert len(images) == len(descriptions), "something messed up while reading data ..."
